@@ -1,0 +1,29 @@
+#!/usr/bin/python
+from afcsv import *
+import csv
+
+file1 = "qb_vendor_totals.csv"
+file2 =  "VendorsExport.csv"
+
+(dummy, list1) = csv_file_to_2d_list(file1)
+print "%s had %d rows" % (file1, len(list1))
+dprint(" list 1: " + str(list1))
+
+(fieldnames, list_all) = csv_file_to_2d_list(file2)
+print "%s had %d rows" % (file2, len(list_all))
+wanted_names = map((lambda l : l["Vendor"]), list1)
+dprint("Wanted names: " + str(wanted_names))
+new_list = []
+for r in list_all :
+	index = list_find(wanted_names, r["Company"])
+	if index != -1 :
+		new_list.append(r)
+	else:
+		print "No match for " + str(r["Company"])
+
+f = open("new_vendor_file.csv", "wb")
+writer = csv.DictWriter(f, fieldnames)
+writer.writeheader()
+writer.writerows(new_list)
+
+# vim: ai ts=4 sts=4 et sw=4 syntax=python:
